@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Threading;
 using TraceLib;
 
 namespace Lab1_Tracer
@@ -13,6 +13,7 @@ namespace Lab1_Tracer
         public void PrintFunc(string text, int count)
         {
             StaticTracer.t.StartTrace();
+            Thread.Sleep(5);
             for (int i = 0; i < count; i++)
                 Console.WriteLine(text);
             StaticTracer.t.StopTrace();
@@ -21,6 +22,7 @@ namespace Lab1_Tracer
         public void NestedFunc(int callTimes)
         {
             StaticTracer.t.StartTrace();
+            Thread.Sleep(5);
             Console.WriteLine(string.Format("NestedFunc was called, {0} calls left", callTimes));
             if (callTimes != 0)
             {
@@ -34,6 +36,7 @@ namespace Lab1_Tracer
         public void CascadeFunc(int callTimes)
         {
             StaticTracer.t.StartTrace();
+            Thread.Sleep(5);
             Console.WriteLine(string.Format("CascadeFunc was called, {0} calls left", callTimes));
             if (callTimes != 0)
             {
@@ -49,6 +52,7 @@ namespace Lab1_Tracer
         public void MultiClassFunc()
         {
             StaticTracer.t.StartTrace();
+            Thread.Sleep(5);
             TestClass1 t1 = new TestClass1();
             for (int i = 0; i < 3; i++)
             {
@@ -59,15 +63,61 @@ namespace Lab1_Tracer
             StaticTracer.t.StopTrace();
         }
     }
+
+    class TestClass3
+    {
+        public void m1()
+        {
+            StaticTracer.t.StartTrace();
+            Thread.Sleep(50);
+            StaticTracer.t.StopTrace();
+
+        }
+        public void m2()
+        {
+            StaticTracer.t.StartTrace();
+            Thread.Sleep(50);
+            StaticTracer.t.StopTrace();
+
+        }
+    }
+
+
     class Program
     {
         
         static void Main(string[] args)
         {
-            StaticTracer.t.StartTrace();
-            TestClass2 t2 = new TestClass2();
-            t2.MultiClassFunc();
-            StaticTracer.t.StopTrace();
+            var t1 = new Thread(() => {
+                StaticTracer.t.StartTrace();
+                TestClass2 t2 = new TestClass2();
+                t2.MultiClassFunc();
+                StaticTracer.t.StopTrace();
+            });
+            t1.Start();
+            var t2 = new Thread(() =>
+            {
+                StaticTracer.t.StartTrace();
+                TestClass3 tmp = new TestClass3();
+                tmp.m1();
+                tmp.m2();
+                StaticTracer.t.StopTrace();
+            });
+            t2.Start();
+            var t3 = new Thread(() =>
+            {
+                TestClass1 tmp = new TestClass1();
+                tmp.PrintFunc("text", 1);
+                tmp.PrintFunc("text", 1);
+                tmp.PrintFunc("text", 1);
+                tmp.PrintFunc("text", 1);
+            });
+            t3.Start();
+            t1.Join();
+            t2.Join();
+            t3.Join();
+
+
             TracingThread[] tmp = StaticTracer.t.GetTraceResult();
             Console.WriteLine("1 for JSON, 2 for XML");
             int k = 0;

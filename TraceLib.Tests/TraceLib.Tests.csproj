@@ -39,9 +39,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExtendedXmlSerializer, Version=3.2.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ExtendedXmlSerializer.3.2.6\lib\net452\ExtendedXmlSerializer.dll</HintPath>
-    </Reference>
     <Reference Include="LightInject, Version=6.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LightInject.6.2.0\lib\net46\LightInject.dll</HintPath>
     </Reference>
@@ -51,9 +48,6 @@
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.2.1.1\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NReco.LambdaParser, Version=1.0.11.0, Culture=neutral, PublicKeyToken=50b5ad72a1d364c6, processorArchitecture=MSIL">
       <HintPath>..\packages\NReco.LambdaParser.1.0.11\lib\net45\NReco.LambdaParser.dll</HintPath>
@@ -91,9 +85,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TraceResultTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TracingThreadTest.cs" />
     <Compile Include="TracerTest.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Threading;
 using System.Diagnostics;
-using Newtonsoft.Json;
-using System.Xml.Serialization;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace TraceLib
 {
@@ -22,14 +18,6 @@ namespace TraceLib
         [System.Runtime.Serialization.DataMember(Name = "class")]
         public string ParentClassName { get; private set; }
 
-        [JsonIgnore]
-        [XmlIgnore]
-        public string ParentMethodName { get; private set; }
-
-        [JsonIgnore]
-        [XmlIgnore]
-        public int CallDepth { get; private set; }
-
         [System.Runtime.Serialization.DataMember(Name = "time")]
         public long ExecutionTime { get; private set; }
 
@@ -39,16 +27,18 @@ namespace TraceLib
         /// <summary>
         /// List of methods that were called within traced method
         /// </summary>
-        public ConcurrentBag<TraceResult> CallStack { get; private set; } = new ConcurrentBag<TraceResult>();
+        public List<TraceResult> Methods { get; private set; } = new List<TraceResult>();
 
-        public TraceResult(string name, string parentName,string parentMethod, int callDepth)
+        public TraceResult(string name, string parentName)
         {
             MethodName = name;
             ParentClassName = parentName;
-            ParentMethodName = parentMethod;
-            CallDepth = callDepth;
-            timer.Start();
+        }
 
+
+        public void ExecutionStart()
+        {
+            timer.Start();
         }
         public void ExecutionFinished()
         {

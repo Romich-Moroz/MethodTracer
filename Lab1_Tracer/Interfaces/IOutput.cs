@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Lab1_Tracer
+﻿namespace Lab1_Tracer
 {
     public interface IOutput
     {

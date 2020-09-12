@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
 using System.Threading;
-using Newtonsoft.Json;
-using System.Xml.Serialization;
 
 namespace TraceLib
 {
@@ -14,8 +11,6 @@ namespace TraceLib
     {
         
         private Stopwatch timer = new Stopwatch();
-        private Thread thread;
-
 
         [System.Runtime.Serialization.DataMember(Name = "id")]
         public int ThreadId { get; private set; }
@@ -24,38 +19,42 @@ namespace TraceLib
         public long ThreadTimeElapsed { get; private set; }
 
         [System.Runtime.Serialization.DataMember(Name = "Methods")]
-        public TraceResult Result { get; private set; }
+        public List<TraceResult> MethodList { get; private set; } = new List<TraceResult>();
 
-        [JsonIgnore]
-        [XmlIgnore]
-        public bool IsAlive { get; private set; }
-      
+        public Stack<TraceResult> MethodStack { get; private set; } = new Stack<TraceResult>();
 
-        public TracingThread(int id, Thread thread)
+        public TracingThread()
         {
-            ThreadId = id;
-            this.thread = thread;
+            ThreadId = Thread.CurrentThread.ManagedThreadId;
+            
+        }
+        public void BeginMethodTrace(TraceResult result)
+        {
+            result.ExecutionStart();
+            if (MethodStack.Count == 0)
+            {
+                MethodList.Add(result);               
+            }
+            else
+            {
+                MethodStack.Peek().Methods.Add(result);
+            }
+            MethodStack.Push(result);
         }
 
-        public void SetTraceResult(TraceResult result)
+        public void StopMethodTrace()
         {
-            Result = result;
+            TraceResult t = MethodStack.Pop();
+            t.ExecutionFinished();   
         }
 
-        public void StartThread()
-        {                      
-            IsAlive = true;
-            timer.Start();
-            thread.Start();
-        }
-
-        public void StopThread()
+        public void CalculateThreadElapsedTime()
         {
-            Result.ExecutionFinished();
-            timer.Stop();
-            thread.Join();            
-            IsAlive = false;
-            ThreadTimeElapsed = timer.ElapsedMilliseconds;
+            ThreadTimeElapsed = 0;
+            foreach(TraceResult t in MethodList)
+            {
+                ThreadTimeElapsed += t.ExecutionTime;
+            }
         }
 
     }
