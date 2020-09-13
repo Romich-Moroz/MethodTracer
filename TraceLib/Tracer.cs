@@ -26,20 +26,6 @@ namespace TraceLib
             return tmp;          
         }
 
-        public byte[] GetSerializedResult(TracingThread[] tree, SerializationType type)
-        {
-            ISerializer serializer;
-            if (type == SerializationType.JSON)
-            {
-                serializer = new JSONSerializer();
-            }
-            else
-            {
-                serializer = new XMLSerializer();
-            }
-            return serializer.Serialize(tree);
-        }
-
 
         public void StartTrace()
         {

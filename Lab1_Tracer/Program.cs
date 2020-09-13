@@ -116,24 +116,22 @@ namespace Lab1_Tracer
             t1.Join();
             t2.Join();
             t3.Join();
-
-
-            TracingThread[] tmp = StaticTracer.t.GetTraceResult();
             Console.WriteLine("1 for JSON, 2 for XML");
             int k = 0;
-            byte[] printData = null;
+            ISerializer serializer = null;
             while (k != '1' && k != '2')
             {
                 k = Console.Read();
                 if (k == '1')
-                {
-                    printData = StaticTracer.t.GetSerializedResult(tmp, Tracer.SerializationType.JSON);
+                {                
+                    serializer = new JSONSerializer();
                 }
                 else if (k == '2')
                 {
-                    printData = StaticTracer.t.GetSerializedResult(tmp, Tracer.SerializationType.XML);
+                    serializer = new XMLSerializer();               
                 }
-            } 
+            }
+            byte[] printData = serializer.Serialize(StaticTracer.t.GetTraceResult());
             Console.WriteLine("1 for Console, 2 for file");
             k = Console.Read();
             IOutput o = null;
